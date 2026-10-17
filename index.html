@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111315">
+<title>个人控制台</title>
+<style>
+:root{color-scheme:dark;--bg:#111315;--panel:#191c1f;--panel2:#202428;--line:#30353a;--text:#edf0f2;--muted:#929ba3;--accent:#b9d6c4;--accent2:#d8c8a6;--warn:#d5b98c;--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif;line-height:1.5}
+button,input{font:inherit}button{cursor:pointer;color:inherit} .wrap{max-width:760px;margin:auto;padding:22px 16px calc(34px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:flex-start;justify-content:space-between;margin:8px 0 24px;gap:12px}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}.title{font-size:27px;letter-spacing:-.04em;font-weight:650;margin:4px 0}.sub{font-size:13px;color:var(--muted)}.date{font-size:12px;color:var(--muted);text-align:right;padding-top:5px}
+.section{margin:25px 0}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section h2{font-size:15px;font-weight:600;margin:0;letter-spacing:.01em}.hint{font-size:11px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;min-width:0}.card.wide{grid-column:1/-1}
+.kicker{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px}.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}.dot.demo{background:var(--warn)}.dot.off{background:#7b858d}
+.big{font-size:27px;font-weight:620;letter-spacing:-.04em;margin:10px 0 3px}.small{font-size:12px;color:var(--muted)}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.pill{border:1px solid var(--line);border-radius:999px;padding:4px 8px;font-size:10px;color:var(--muted);white-space:nowrap}.pill.live{color:var(--accent);border-color:#40594b}.pill.demo{color:var(--warn);border-color:#5b4d38}.divider{height:1px;background:var(--line);margin:14px 0}
+.actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.action{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:13px 7px;text-align:center;min-height:74px}.action .glyph{font-size:18px;margin-bottom:5px;color:var(--accent)}.action span{display:block;font-size:12px}.action:active,.tool:active{transform:scale(.98)}
+.note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:12px}
+input{width:100%;background:#101214;border:1px solid var(--line);border-radius:11px;padding:11px 12px;color:var(--text);outline:none}input:focus{border-color:#60796a}
+.btn{background:var(--accent);color:#172019;border:0;border-radius:11px;padding:10px 13px;font-weight:650;font-size:12px}.btn.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}.btn.danger{background:transparent;color:#d7a7a7;border:1px solid #583e40}
+.tool-list{display:grid;gap:8px}.tool{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;text-decoration:none;color:inherit;min-width:0}.tool-icon{width:36px;height:36px;border-radius:11px;background:var(--panel2);display:grid;place-items:center;color:var(--accent);flex-shrink:0}.tool-copy{flex:1;min-width:0}.tool-copy strong{display:block;font-size:13px;font-weight:550}.tool-copy small{display:block;color:var(--muted);font-size:11px;overflow-wrap:anywhere}.arrow{color:var(--muted)}
+.status-list{display:grid;gap:0}.status-item{padding:12px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}.status-item:last-child{border-bottom:0}.status-item strong{font-size:13px;font-weight:550}.status-item p{margin:3px 0 0;color:var(--muted);font-size:11px}
+.footer{border-top:1px solid var(--line);padding-top:16px;margin-top:28px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:12px}
+.toast{position:fixed;bottom:calc(22px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:#e7ece8;color:#1a211d;padding:10px 14px;border-radius:12px;font-size:12px;box-shadow:0 8px 32px #0007;display:none;max-width:90vw;z-index:10}
+@media(min-width:600px){.wrap{padding-left:24px;padding-right:24px}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.card.wide{grid-column:span 2}.grid .card:nth-child(1),.grid .card:nth-child(2){grid-column:span 2}}
+</style>
+
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="个人控制台">
+\n</head>
+<body>
+<div class="wrap">
+<header>
+ <div><div class="eyebrow">PERSONAL / SPACE</div><div class="title">个人控制台</div><div class="sub">安静、有序，把常用的放在手边。</div></div>
+ <div class="date" id="today">正在读取日期</div>
+</header>
+
+<section class="section">
+ <div class="section-head"><h2>概况</h2><span class="hint">设备可见信息</span></div>
+ <div class="grid">
+  <div class="card"><div class="kicker"><i class="dot"></i>浏览器</div><div class="big" id="browserState">可用</div><div class="small" id="browserDetail">当前网页正在运行</div></div>
+  <div class="card"><div class="kicker"><i class="dot"></i>网络连接</div><div class="big" id="networkState">检测中</div><div class="small" id="networkDetail">浏览器连接状态</div></div>
+  <div class="card"><div class="kicker"><i class="dot off"></i>系统电量</div><div class="big">不可读取</div><div class="small">网页无权直接读取系统电池信息</div></div>
+  <div class="card"><div class="kicker"><i class="dot off"></i>系统版本</div><div class="big" id="osState">未知</div><div class="small">浏览器标识不一定等于真实系统版本</div></div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="section-head"><h2>快捷设置</h2><span class="hint">打开系统页面</span></div>
+ <div class="actions">
+  <button class="action" onclick="openSettings('settings')"><div class="glyph">↗</div><span>系统设置</span></button>
+  <button class="action" onclick="openSettings('wifi')"><div class="glyph">⌁</div><span>网络设置</span></button>
+  <button class="action" onclick="openSettings('display')"><div class="glyph">◐</div><span>显示设置</span></button>
+ </div>
+ <p class="note">这些按钮会尝试打开系统设置入口；浏览器或鸿蒙版本可能不支持跳转。不会在网页内假装已更改 Wi‑Fi、亮度或其他系统开关。</p>
+</section>
+
+<section class="section">
+ <div class="section-head"><h2>天气</h2><span class="pill" id="weatherBadge">待接入</span></div>
+ <div class="card wide">
+  <div class="row"><div><div class="kicker"><i class="dot off"></i>本地天气</div><div class="big" id="weatherTemp">— °</div><div class="small" id="weatherDesc">尚未连接天气服务</div></div><div style="font-size:34px;color:#8f9d94">☁</div></div>
+  <div class="divider"></div>
+  <div class="row"><div class="small" id="weatherPlace">位置：未获取</div><button class="btn secondary" onclick="loadWeather()">尝试获取天气</button></div>
+  <p class="note" id="weatherNote">需要天气数据服务。若未配置服务，此处不会展示虚构温度。</p>
+ </div>
+</section>
+
+<section class="section">
+ <div class="section-head"><h2>活动与步数</h2><span class="pill demo">未接入健康数据</span></div>
+ <div class="card wide">
+  <div class="row"><div><div class="kicker"><i class="dot off"></i>今日步数</div><div class="big">— <span style="font-size:13px;font-weight:450;color:var(--muted)">步</span></div><div class="small">暂无可验证的数据来源</div></div><div style="font-size:30px;color:#8f9d94">↗</div></div>
+  <div class="divider"></div>
+  <div class="small">后续可研究通过系统健康服务、厂商接口或用户授权的数据源接入。此版本不生成模拟步数。</div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="section-head"><h2>微信消息</h2><span class="pill">未授权 / 未接入</span></div>
+ <div class="card wide">
+  <div class="row"><div><div class="kicker"><i class="dot off"></i>通知状态</div><div class="big" style="font-size:20px">网页无法读取</div></div><div style="font-size:28px;color:#8f9d94">◎</div></div>
+  <p class="note">网页不能直接读取微信聊天内容或系统通知。若要做通知摘要，需要使用受支持的系统通知授权或专门的原生应用能力，并由你主动授权。当前不读取、不保存任何微信内容。</p>
+  <button class="btn secondary" onclick="toast('当前网页没有通知读取权限；未读取任何消息。')">查看权限说明</button>
+ </div>
+</section>
+
+<section class="section">
+ <div class="section-head"><h2>个人工具</h2><span class="hint">仅保存在本设备浏览器</span></div>
+ <div class="card wide" style="margin-bottom:10px">
+  <div class="kicker">添加一个常用入口</div>
+  <div style="display:grid;gap:8px;margin-top:10px">
+   <input id="toolName" maxlength="32" placeholder="名称，例如：我的日程">
+   <input id="toolUrl" inputmode="url" placeholder="网址，例如：https://example.com">
+   <button class="btn" onclick="addTool()">添加入口</button>
+  </div>
+  <p class="note">只接受 http 或 https 地址。入口数据使用浏览器本地存储；清理浏览器数据后可能丢失。</p>
+ </div>
+ <div class="tool-list" id="toolList"></div>
+</section>
+
+<section class="section">
+ <div class="section-head"><h2>功能状态</h2><span class="hint">透明标记</span></div>
+ <div class="card wide"><div class="status-list">
+  <div class="status-item"><div><strong>网页基础信息</strong><p>浏览器可读取</p></div><span class="pill live">可用</span></div>
+  <div class="status-item"><div><strong>系统设置快捷入口</strong><p>尝试跳转，不保证系统支持</p></div><span class="pill">有限支持</span></div>
+  <div class="status-item"><div><strong>天气与步数</strong><p>需要可靠数据源 / 健康授权</p></div><span class="pill demo">待接入</span></div>
+  <div class="status-item"><div><strong>微信通知</strong><p>需要原生能力与用户授权</p></div><span class="pill demo">待接入</span></div>
+ </div></div>
+</section>
+<div class="footer"><span>PERSONAL CONSOLE · V1.0</span><span>无广告 · 不伪造数据</span></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+function setDate(){const d=new Date();$('today').textContent=d.toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'long'});}
+function detect(){
+ const ua=navigator.userAgent||'';
+ $('browserState').textContent=/Android|HarmonyOS|Linux|iPhone|iPad/i.test(ua)?'移动端':'网页';
+ $('browserDetail').textContent=/HarmonyOS|OpenHarmony/i.test(ua)?'检测到可能的鸿蒙标识':'浏览器环境已运行';
+ $('networkState').textContent=navigator.onLine?'在线':'离线';
+ $('networkDetail').textContent=navigator.onLine?'浏览器报告网络已连接':'浏览器报告当前离线';
+ $('osState').textContent=/HarmonyOS|OpenHarmony/i.test(ua)?'可能为鸿蒙':/Android/i.test(ua)?'Android 标识':/iPhone|iPad/i.test(ua)?'iOS 标识':'未识别';
+}
+window.addEventListener('online',detect);window.addEventListener('offline',detect);
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.style.display='none',2600);}
+function openSettings(kind){
+ const urls={settings:['intent:#Intent;action=android.settings.SETTINGS;end','系统设置'],wifi:['intent:#Intent;action=android.settings.WIFI_SETTINGS;end','网络设置'],display:['intent:#Intent;action=android.settings.DISPLAY_SETTINGS;end','显示设置']};
+ const [url,label]=urls[kind];
+ if(kind==='settings'){toast('正在尝试打开系统设置');location.href=url;return;}
+ toast('正在尝试打开'+label+'；若未跳转，请从手机设置中手动进入。');
+ setTimeout(()=>{try{location.href=url}catch(e){}},200);
+}
+async function loadWeather(){
+ if(!navigator.onLine){$('weatherNote').textContent='当前浏览器报告离线，请联网后再试。';return;}
+ if(!navigator.geolocation){$('weatherNote').textContent='此浏览器不支持位置权限，天气仍未接入。';return;}
+ $('weatherNote').textContent='正在请求位置权限。当前版本尚未连接天气服务，不会仅凭位置猜测天气。';
+ navigator.geolocation.getCurrentPosition(
+  pos=>{$('weatherPlace').textContent='已获得位置坐标（未保存）';$('weatherNote').textContent='位置权限已授权，但当前版本没有天气服务接口，因此仍不显示温度或天气结论。';$('weatherBadge').textContent='服务未接入';},
+  err=>{$('weatherNote').textContent=err.code===1?'你未授权位置；未读取精确位置。也可以稍后接入不需要位置权限的城市天气查询。':'暂时无法获取位置。天气服务仍未接入。';},
+  {enableHighAccuracy:false,timeout:8000,maximumAge:300000}
+ );
+}
+const defaultTools=[
+ {name:'浏览器',url:'https://www.google.com'},
+ {name:'天气查询',url:'https://www.weather.gov/'},
+ {name:'待办 / 日程',url:'https://calendar.google.com'}
+];
+function safeUrl(raw){try{const u=new URL(raw);return ['https:','http:'].includes(u.protocol)?u.href:null}catch(e){return null}}
+function getTools(){try{const v=JSON.parse(localStorage.getItem('personalConsoleTools')||'null');return Array.isArray(v)?v:defaultTools}catch(e){return defaultTools}}
+function saveTools(v){try{localStorage.setItem('personalConsoleTools',JSON.stringify(v));return true}catch(e){toast('浏览器存储不可用，未能保存入口。');return false}}
+function renderTools(){
+ const list=$('toolList');list.innerHTML='';const tools=getTools();
+ if(!tools.length){list.innerHTML='<div class="card small">还没有入口。你可以添加常用网站。</div>';return;}
+ tools.forEach((t,i)=>{
+  const a=document.createElement('a');a.className='tool';a.href=t.url;a.target='_blank';a.rel='noopener noreferrer';
+  const icon=document.createElement('div');icon.className='tool-icon';icon.textContent='↗';
+  const copy=document.createElement('div');copy.className='tool-copy';
+  const strong=document.createElement('strong');strong.textContent=t.name;
+  const small=document.createElement('small');small.textContent=t.url;
+  copy.append(strong,small);const arrow=document.createElement('span');arrow.className='arrow';arrow.textContent='↗';
+  a.append(icon,copy,arrow);list.append(a);
+  const del=document.createElement('button');del.className='btn secondary';del.style.margin='-2px 0 4px';del.textContent='移除 '+t.name;del.onclick=()=>{const next=getTools();next.splice(i,1);if(saveTools(next))renderTools();};list.append(del);
+ });
+}
+function addTool(){
+ const name=$('toolName').value.trim(),url=safeUrl($('toolUrl').value.trim());
+ if(!name){toast('请先填写入口名称。');return;}if(!url){toast('请输入有效的 http 或 https 网址。');return;}
+ const tools=getTools();tools.push({name,url});if(saveTools(tools)){ $('toolName').value='';$('toolUrl').value='';renderTools();toast('入口已保存到本设备浏览器。');}
+}
+setDate();detect();renderTools();
+</script>
+
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+\n</body>
+</html>
